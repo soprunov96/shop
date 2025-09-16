@@ -8,6 +8,3 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByParent(Category parent);
 }
-
-
-//public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, String> {}
