@@ -13,7 +13,7 @@ public class Product {
 
     private String name;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -23,8 +23,7 @@ public class Product {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Product(Long id, String name, Category category, BigDecimal price, String currency, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
+    public Product( String name, Category category, BigDecimal price, String currency, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.name = name;
         this.category = category;
         this.price = price;

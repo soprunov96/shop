@@ -1,7 +1,10 @@
 package com.example.shop.service;
 
+import com.example.shop.dto.ProductRequest;
+import com.example.shop.models.Category;
 import com.example.shop.models.ExchangeRate;
 import com.example.shop.models.Product;
+import com.example.shop.repository.CategoryRepository;
 import com.example.shop.repository.ExchangeRateRepository;
 import com.example.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +20,22 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private ExchangeRateRepository exchangeRateRepository;
 
-    public Product createProduct(Product product) {
+    public Product createProduct(ProductRequest productRequest) {
+        Category category = categoryRepository.findById(productRequest.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        // Create the Product
+        Product product = new Product();
+        product.setName(productRequest.getName());
+        product.setCategory(category);
+        product.setCurrency(productRequest.getCurrency());
+        product.setPrice(productRequest.getPrice());
+
         // If product is provided in a non-EUR currency, convert to EUR
         if (!"EUR".equalsIgnoreCase(product.getCurrency())) {
             ExchangeRate exchangeRate = exchangeRateRepository.findById(product.getCurrency())
@@ -40,7 +56,6 @@ public class ProductService {
         Product product = getProductById(productId);
 
         if ("EUR".equalsIgnoreCase(targetCurrency)) {
-            // Return the price directly if the target currency is EUR
             return product.getPrice();
         } else {
             // Convert to the target currency using exchange rate

@@ -1,5 +1,6 @@
 package com.example.shop.controller;
 
+import com.example.shop.dto.ProductRequest;
 import com.example.shop.models.Product;
 import com.example.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
+    public Product createProduct(@RequestBody ProductRequest productRequest) {
+        return productService.createProduct(productRequest);
     }
 
     @GetMapping

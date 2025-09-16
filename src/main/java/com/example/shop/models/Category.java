@@ -1,8 +1,10 @@
 package com.example.shop.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Category {
@@ -16,19 +18,23 @@ public class Category {
     @JoinColumn(name = "parent_id")
     private Category parent;
 
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Product> products;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Category(Long id, String name, Category parent, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Category(Long id, String name, Category parent, List<Product> products, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.parent = parent;
+        this.products = products;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
     public Category() {
-
     }
 
     public Long getId() {
@@ -69,5 +75,13 @@ public class Category {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }

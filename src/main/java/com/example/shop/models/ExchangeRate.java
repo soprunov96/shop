@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 public class ExchangeRate {
     @Id
-    private String currencyCode; // Example: "USD"
+    private String currencyCode;
     private BigDecimal rateToEur;
     private LocalDateTime updatedAt;
 
