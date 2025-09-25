@@ -1,0 +1,32 @@
+#version: '3.8'
+#
+#services:
+#  mysql:
+#    image: mysql:8.0
+#    container_name: mysql-container
+#    environment:
+#      MYSQL_ROOT_PASSWORD: user
+#      MYSQL_DATABASE: root
+#      MYSQL_USER: admin
+#      MYSQL_PASSWORD: admin
+#    ports:
+#      - "3306:3306"
+#    networks:
+#      - app-network
+#
+#  app:
+#    image: my-spring-app:1.0
+#    container_name: spring-app
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/shop
+#      SPRING_DATASOURCE_USERNAME: user
+#      SPRING_DATASOURCE_PASSWORD: root
+#    depends_on:
+#      - mysql
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - app-network
+#
+#networks:
+#  app-network:
