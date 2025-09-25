@@ -1,6 +1,7 @@
 package com.example.shop.security;
 
 import com.example.shop.service.CustomUserDetailsService;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
