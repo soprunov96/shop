@@ -1,8 +1,6 @@
 package com.example.shop.security;
 
-import com.example.shop.models.RoleName;
 import com.example.shop.service.CustomUserDetailsService;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,8 +28,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity,
-                                                       PasswordEncoder passwordEncoder) throws Exception {
+    public AuthenticationManager authenticationManager(
+            HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
         return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(customUserDetailsService)
                 .passwordEncoder(passwordEncoder)
@@ -46,18 +44,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/login").permitAll() // Allow public access to login
-                .requestMatchers(org.springframework.http.HttpMethod.GET, "/categories/**").hasRole("READ") // Only ROLE_READ can access GET requests
+        http.csrf(csrf -> csrf.disable()) // Disable CSRF
+                .authorizeHttpRequests(authorize -> authorize
+                        // Public access to login endpoint
+                        .requestMatchers("/login").permitAll()
 
-                // WRITE role: Allow POST, PUT, and DELETE operations to `/categories`
-                .requestMatchers(org.springframework.http.HttpMethod.POST, "/categories/**").hasRole("WRITE")
-                .requestMatchers(org.springframework.http.HttpMethod.PUT, "/categories/**").hasRole("WRITE")
-                .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/categories/**").hasRole("WRITE")
+                        // GET requests to `/categories/**` require ROLE_READ
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/categories/**").hasRole("READ")
 
-                .anyRequest().authenticated()
-                .and()
+                        // POST, PUT, DELETE requests to `/categories/**` require ROLE_WRITE
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/categories/**").hasRole("WRITE")
+                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/categories/**").hasRole("WRITE")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/categories/**").hasRole("WRITE")
+
+                        // All other requests must be authenticated
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
