@@ -46,7 +46,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // Disable CSRF
                 .authorizeHttpRequests(authorize -> authorize
-                        // Public access to login endpoint
                         .requestMatchers("/login").permitAll()
 
                         // GET requests to `/categories/**` require ROLE_READ

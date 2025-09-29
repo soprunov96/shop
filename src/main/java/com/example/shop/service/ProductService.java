@@ -45,7 +45,6 @@ public class ProductService {
 
         Product product = buildProduct(productRequest, category);
 
-        // Convert price if needed
         if (!Constants.EUR.equalsIgnoreCase(product.getCurrency())) {
             BigDecimal convertedPrice = convertToEur(product.getPrice(), product.getCurrency());
             product.setPrice(convertedPrice);
