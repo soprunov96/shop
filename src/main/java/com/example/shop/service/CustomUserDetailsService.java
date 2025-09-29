@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // Map roles to GrantedAuthority (Spring Security's role structure)
         List<GrantedAuthority> authorities = shopUser.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().name())) // Prefix roles with "ROLE_"
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().name()))
                 .collect(Collectors.toList());
 
         // Return UserDetails for Spring Security

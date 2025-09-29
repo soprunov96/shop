@@ -17,16 +17,18 @@ import java.util.Map;
 @Service
 public class ExchangeRateService {
 
-    @Autowired
-    private CurrencyExchangeFeignClient feignClient;
+    private final CurrencyExchangeFeignClient feignClient;
+    private final ExchangeRateRepository exchangeRateRepository;
 
-    @Autowired
-    private ExchangeRateRepository exchangeRateRepository;
+    public ExchangeRateService(CurrencyExchangeFeignClient feignClient, ExchangeRateRepository exchangeRateRepository) {
+        this.feignClient = feignClient;
+        this.exchangeRateRepository = exchangeRateRepository;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(ExchangeRateService.class);
 
 
-    @Value("${fixer.api.key}") // Load API key from application.properties
+    @Value("${fixer.api.key}")
     private String apiKey;
 
     public void updateExchangeRates() {

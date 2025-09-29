@@ -2,10 +2,8 @@ package com.example.shop.controller;
 
 import com.example.shop.dto.CategoryRequest;
 import com.example.shop.models.Category;
-import com.example.shop.models.Product;
 import com.example.shop.repository.CategoryRepository;
 import com.example.shop.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,11 +11,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
-    @Autowired
-    private CategoryRepository categoryRepository;
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService, CategoryRepository categoryRepository) {
+        this.categoryService = categoryService;
+        this.categoryRepository = categoryRepository;
+    }
 
     @GetMapping
     public List<Category> getAllCategories() {

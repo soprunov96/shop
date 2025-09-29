@@ -1,12 +1,13 @@
 package com.example.shop.controller;
 
 import com.example.shop.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.shop.service.ExchangeRateService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -15,20 +16,19 @@ import java.util.Collections;
 @RequestMapping("/login")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private static final Logger logger = LoggerFactory.getLogger(ExchangeRateService.class);
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
 
     @PostMapping
     public ResponseEntity<?> authenticate(@RequestBody AuthRequest request) {
-        System.out.printf("try to login");
-        System.out.printf(request.getUsername());
-        System.out.printf(request.getPassword());
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String hashedPassword = encoder.encode("user");
-        System.out.println("Hashed Password: " + hashedPassword);
+        logger.info("try to login");
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
@@ -63,14 +63,5 @@ class AuthRequest {
     }
 }
 
-class AuthResponse {
-    private String token;
-
-    public AuthResponse(String token) {
-        this.token = token;
-    }
-
-    public String getToken() {
-        return token;
-    }
+record AuthResponse(String token) {
 }

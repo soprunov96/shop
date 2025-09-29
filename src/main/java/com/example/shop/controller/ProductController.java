@@ -17,10 +17,13 @@ import com.example.shop.service.ProductService;
 @RequestMapping("/products")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductService productService;
+    private final ProductRepository productRepository;
+
+    public ProductController(ProductService productService, ProductRepository productRepository) {
+        this.productService = productService;
+        this.productRepository = productRepository;
+    }
 
     @PostMapping
     public Product createProduct(@RequestBody ProductRequest productRequest) {

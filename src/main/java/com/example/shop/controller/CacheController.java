@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/cache")
 public class CacheController {
 
-    @Autowired
-    private CacheManager cacheManager;
+    private final CacheManager cacheManager;
+
+    public CacheController(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
     @GetMapping("/inspect")
     public Object inspectCache() {
