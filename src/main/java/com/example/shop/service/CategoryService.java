@@ -1,6 +1,7 @@
 package com.example.shop.service;
 
 import com.example.shop.dto.CategoryRequest;
+import com.example.shop.dto.CategoryUpdateRequest;
 import com.example.shop.exceptions.CategoryNotFoundException;
 import com.example.shop.models.Category;
 import com.example.shop.repository.CategoryRepository;
@@ -36,19 +37,17 @@ public class CategoryService {
     /**
      * Updates an existing category by ID.
      * @param categoryId the ID of the category to update
-     * @param name the new name for the category
-     * @param parentId the ID of the optional parent category
+     * @param categoryUpdateRequest the DTO containing name and optional parentId
      * @return the updated category
      */
-    public Category updateCategory(Long categoryId, String name, Long parentId) {
+    public Category updateCategory(Long categoryId, CategoryUpdateRequest categoryUpdateRequest) {
         Category category = getCategoryByIdOrThrow(categoryId, "Category not found for ID: ");
 
-        category.setName(name);
+        category.setName(categoryUpdateRequest.getName());
         category.setUpdatedAt(LocalDateTime.now());
 
-        // Set and link the parent category (if present).
-        if (parentId != null) {
-            category.setParent(getCategoryByIdOrThrow(parentId, "Parent category not found for ID: "));
+        if (categoryUpdateRequest.getParentId() != null) {
+            category.setParent(getCategoryByIdOrThrow(categoryUpdateRequest.getParentId(), "Parent category not found for ID: "));
         }
 
         return categoryRepository.save(category);
@@ -103,4 +102,5 @@ public class CategoryService {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(errorMessage + categoryId));
     }
+
 }

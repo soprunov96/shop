@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 @Service
 public class ProductService {
@@ -58,6 +59,48 @@ public class ProductService {
 
     public Product getProductById(Long id) {
         return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + id));
+    }
+
+    public void deleteProduct(Long id) {
+        LOGGER.info("Deleting product with ID: {}", id);
+
+        // Check if the product exists
+        Product product = getProductById(id);
+
+        // Delete the product
+        productRepository.delete(product);
+        LOGGER.info("Product deleted successfully with ID: {}", id);
+    }
+
+    public List<Product> getAllProducts() {
+        LOGGER.info("Fetching all products");
+        return productRepository.findAll();
+    }
+
+    public Product updateProduct(Long id, ProductRequest productRequest) {
+        LOGGER.info("Updating product with ID: {}", id);
+
+        Product existingProduct = getProductById(id); // Fetch the product or throw an exception if not found
+        existingProduct.setName(productRequest.getName());
+        existingProduct.setPrice(validatePrice(productRequest.getPrice()));
+        existingProduct.setCurrency(productRequest.getCurrency());
+
+        if (productRequest.getCategoryId() != null) {
+            Category category = categoryRepository.findById(productRequest.getCategoryId())
+                    .orElseThrow(() -> new CategoryNotFoundException("Category not found with ID: " + productRequest.getCategoryId()));
+            existingProduct.setCategory(category);
+        }
+
+        // If the updated currency is not EUR, convert the price to EUR
+        if (!Constants.EUR.equalsIgnoreCase(existingProduct.getCurrency())) {
+            BigDecimal convertedPrice = convertToEur(existingProduct.getPrice(), existingProduct.getCurrency());
+            existingProduct.setPrice(convertedPrice);
+            existingProduct.setCurrency(Constants.EUR);
+        }
+
+        Product updatedProduct = productRepository.save(existingProduct);
+        LOGGER.info("Product updated successfully with ID: {}", updatedProduct.getId());
+        return updatedProduct;
     }
 
     public BigDecimal getPriceInCurrency(Long productId, String targetCurrency) {

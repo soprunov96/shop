@@ -2,7 +2,6 @@ package com.example.shop.controller;
 
 import com.example.shop.dto.ProductRequest;
 import com.example.shop.models.Product;
-import com.example.shop.repository.ProductRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
@@ -17,11 +16,9 @@ import com.example.shop.service.ProductService;
 public class ProductController {
 
     private final ProductService productService;
-    private final ProductRepository productRepository;
 
-    public ProductController(ProductService productService, ProductRepository productRepository) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.productRepository = productRepository;
     }
 
     @PostMapping
@@ -31,7 +28,7 @@ public class ProductController {
 
     @GetMapping
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return productService.getAllProducts();
     }
 
     @GetMapping("/{id}")
@@ -40,14 +37,13 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        product.setId(id);
-        return productRepository.save(product);
+    public Product updateProduct(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
+        return productService.updateProduct(id, productRequest);
     }
 
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id) {
-        productRepository.deleteById(id);
+        productService.deleteProduct(id);
     }
 
     @GetMapping("/{id}/price")
